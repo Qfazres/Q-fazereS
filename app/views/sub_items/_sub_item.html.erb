@@ -1,0 +1,23 @@
+<% if sub_item.completed == true %>
+  <div class="row">
+    <div class="col-md-2">
+      <% if sub_item.item.completed != true and @list.user_id == current_user.id %>
+        <%= link_to user_list_item_sub_item_uncomplete_path(@user, @list, sub_item.item, sub_item), method: :patch, class: "btn btn-sm btn-default" do %><span class="glyphicon glyphicon-remove"</span><% end %>
+      <% end %>
+    </div>
+    <div class="col-md-10">
+      <li style="opacity:0.5"><strike><%= sub_item.description %></strike></li>
+    </div>
+  </div>
+<% else %>
+  <div class="row">
+    <div class="col-md-2">
+      <% if @list.user_id == current_user.id %>
+        <%= link_to user_list_item_sub_item_complete_path(@user, @list, sub_item.item, sub_item), method: :patch, class: "btn btn-sm btn-default" do %><span class="glyphicon glyphicon-ok"</span><% end %>
+      <% end %>
+    </div>
+    <div class="col-md-10">
+      <li><%= sub_item.description %></li>
+    </div>
+  </div>
+<% end %>

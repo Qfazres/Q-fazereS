@@ -1,0 +1,75 @@
+<%= simple_form_for [@user, @list] do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :title, label: "Título", required: true, autofocus: true %>
+    <%= f.input :description, label: "Descrição", required: true %>
+    <%= f.input :public, label: "Público?" %>
+  </div>
+
+  <% i = 0 %>
+  <% if @list.items.any? %>
+    <% @list.items.each do |item| %>
+      <h3>Tarefa</h3>
+      <%= f.fields_for :items, item do |ff| %>
+        <div class="row">
+          <div class="col-md-10">
+            <%= ff.input :description, label: "Tarefa" %>
+          </div>
+          <div class="col-md-2">
+            <label class="form-group">Ação</label>
+            <p><%= link_to user_list_item_path(@user, @list, item), method: :delete, data: { confirm: "Deletar Tarefa?" } do %>Deletar <span class="glyphicon glyphicon-trash"></span><% end %><p>
+          </div>
+        </div>
+        <%= ff.fields_for :sub_items, SubItem.new do |fff| %>
+        <% end %>
+      <% end %>
+
+      <% if item.sub_items.any? %>
+        <h3>Sub-Tarefas</h3>
+        <ol>
+          <% item.sub_items.each do |sub| %>
+            <li><%= sub.description %><%= link_to "Deletar", user_list_item_sub_item_path(@user, @list, item, sub) , method: :delete, data: { confirm: "Deletar Sub Tarefa?" } %></li>
+          <% end %>
+        </ol>
+      <% end %>
+
+      <div id="lista_sub_tarefas">
+        <button type="button" class="adicionar_sub_tarefa">Adicionar Sub Tarefa <span class="glyphicon glyphicon-plus"></span></button>
+        <input type="hidden" value='<%= i %>'/>
+      </div>
+      <br />
+      <% i += 1 %>
+    <% end %>
+  <% end %>
+
+  <input type="hidden" value='<%= i %>' id="size"/>
+  <button type="button" id="adicionar_tarefa">Adicionar Tarefas <span class="glyphicon glyphicon-plus"></span></button>
+
+  <div id="lista_tarefas">
+
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, "Salvar" %>
+  </div>
+<% end %>
+
+<script>
+  $(document).ready(function(){
+    var j = 0;
+    var k = $("#size").val();
+    $("#adicionar_tarefa").on("click", function(){
+      var tarefa = "<input id='list_items_attributes_"+k+"_description' class='string optional form-control' type='text' name='list[items_attributes]["+k+"][description]'>";
+      $("#lista_tarefas").append(tarefa);
+      k++;
+    });
+
+    $(".adicionar_sub_tarefa").on("click", function(){
+      var i = $(this).parent("div").find("input").val();
+      var subTarefa = "<input id='list_items_attributes_"+i+"_sub_items_attributes_"+j+"_description' class='string required form-control' type='text' name='list[items_attributes]["+i+"][sub_items_attributes]["+j+"][description]'>";
+      $(this).parent("div").append(subTarefa);
+      j++;
+    });
+  });
+</script>

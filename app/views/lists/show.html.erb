@@ -1,0 +1,49 @@
+<h1 class="text-center"><%= render @list %></h1>
+<br />
+
+<% @list.items.each do |item| %>
+  <% if item.completed == true %>
+    <div class="row">
+      <div class="col-md-2">
+        <% if @list.user_id == current_user.id %>
+          <%= link_to user_list_item_uncomplete_path(@user, @list, item), method: :patch, class: "btn btn-sm btn-default" do %><span class="glyphicon glyphicon-remove"</span><% end %>
+        <% end %>
+      </div>
+      <div class="col-md-8 text-center">
+        <p style="opacity:0.5"><strike><%= item.description %></strike><p><br>
+        <ul>
+          <% item.sub_items.each do |sub_item| %>
+            <%= render sub_item %>
+          <% end %>
+        </ul>
+      </div>
+      <div class="col-md-2">
+        <% if @list.user_id == current_user.id %>
+          <%= link_to user_list_item_path(@user, @list, item), method: :delete, class: "btn btn-sm btn-default" do %><span class="glyphicon glyphicon-trash"></span><% end %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="row">
+      <div class="col-md-2">
+        <% if @list.user_id == current_user.id %>
+          <%= link_to user_list_item_complete_path(@user, @list, item), method: :patch, class: "btn btn-sm btn-default" do %><span class="glyphicon glyphicon-ok"</span><% end %>
+        <% end %>
+      </div>
+      <div class="col-md-8 text-center">
+        <p><%= item.description %><p><br>
+        <ul>
+          <% item.sub_items.each do |sub_item| %>
+            <%= render sub_item %>
+          <% end %>
+      </ul>
+      </div>
+      <div class="col-md-2">
+        <% if @list.user_id == current_user.id %>
+          <%= link_to user_list_item_path(@user, @list, item), method: :delete, class: "btn btn-sm btn-default" do %><span class="glyphicon glyphicon-trash"></span><% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+  <br/>
+<% end %>
